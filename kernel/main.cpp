@@ -8,14 +8,13 @@
 #include <cstdint>
 #include <cstdio>
 
-// #@@range_begin(includes)
 #include "console.hpp"
 #include "font.hpp"
 #include "frame_buffer_config.hpp"
 #include "graphics.hpp"
-// #@@range_end(includes)
+#include "pci.hpp"
 
-void *operator new(size_t size, void *buf) { return buf; }
+// void *operator new(size_t size, void *buf) { return buf; }
 
 void operator delete(void *obj) noexcept {}
 
@@ -56,12 +55,9 @@ const char mouse_cursor_shape[kMouseCursorHeight][kMouseCursorWidth + 1] = {
 char pixel_writer_buf[sizeof(RGBResv8BitPerColorPixelWriter)];
 PixelWriter *pixel_writer;
 
-// #@@range_begin(console_buf)
 char console_buf[sizeof(Console)];
 Console *console;
-// #@@range_end(console_buf)
 
-// #@@range_begin(printk)
 int printk(const char *format, ...) {
   va_list ap;
   int result;
@@ -74,7 +70,6 @@ int printk(const char *format, ...) {
   console->PutString(s);
   return result;
 }
-// #@@range_end(printk)
 
 extern "C" void KernelMain(const FrameBufferConfig &frame_buffer_config) {
   switch (frame_buffer_config.pixel_format) {
@@ -112,7 +107,18 @@ extern "C" void KernelMain(const FrameBufferConfig &frame_buffer_config) {
         pixel_writer->Write(200 + dx, 100 + dy, {255, 255, 255});
       }
     }
-
-    while (1) __asm__("hlt");
   }
+
+  auto err = pci::ScanAllBus();
+  printk("ScanAllBus: %s\n", err.Name());
+
+  for (int i = 0; i < pci::num_device; ++i) {
+    const auto &dev = pci::devices[i];
+    auto vendor_id = pci::ReadVendorId(dev.bus, dev.device, dev.function);
+    auto class_code = pci::ReadClassCode(dev.bus, dev.device, dev.function);
+    printk("%d.%d.%d: vend %04x, class %08x, head %02x\n", dev.bus, dev.device,
+           dev.function, vendor_id, class_code, dev.header_type);
+  }
+
+  while (1) __asm__("hlt");
 }
