@@ -699,5 +699,37 @@
    "mouse.o"
   ],
   "file": "mouse.cpp"
+ },
+ {
+  "directory": "/home/urawa72/workspace/mikanos_work/kernel",
+  "arguments": [
+   "clang++",
+   "-I/home/urawa72/osbook/devenv/x86_64-elf/include/c++/v1",
+   "-I/home/urawa72/osbook/devenv/x86_64-elf/include",
+   "-I/home/urawa72/osbook/devenv/x86_64-elf/include/freetype2",
+   "-I/home/urawa72/edk2/MdePkg/Include",
+   "-I/home/urawa72/edk2/MdePkg/Include/X64",
+   "-nostdlibinc",
+   "-D__ELF__",
+   "-D_LDBL_EQ_DBL",
+   "-D_GNU_SOURCE",
+   "-D_POSIX_TIMERS",
+   "-DEFIAPI=__attribute__((ms_abi))",
+   "-I.",
+   "-O2",
+   "-Wall",
+   "-g",
+   "--target=x86_64-elf",
+   "-ffreestanding",
+   "-mno-red-zone",
+   "-fno-exceptions",
+   "-fno-rtti",
+   "-std=c++17",
+   "-c",
+   "interrupt.cpp",
+   "-o",
+   "interrupt.o"
+  ],
+  "file": "interrupt.cpp"
  }
 ]
