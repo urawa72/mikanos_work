@@ -1,0 +1,6 @@
+kernel/kernel.elf
+kernel/hankaku.bin
+kernel/*.o
+kernel/.*.d
+kernel/*.swp
+kernel/.cache
